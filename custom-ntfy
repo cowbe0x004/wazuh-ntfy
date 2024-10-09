@@ -1,0 +1,84 @@
+#!/var/ossec/framework/python/bin/python3
+
+# https://github.com/cowbe0x004/wazuh-ntfy
+
+import json
+import os
+import sys
+import requests
+
+def main(args):
+  if len(args) < 4:
+    print("ERROR: Wrong arguments")
+    sys.exit(2)
+
+  alert_file_location = args[1]
+  hook_url = args[3]
+
+  try:
+    with open(alert_file_location) as alert_file:
+      alert_json = json.load(alert_file)
+
+      alert_level = alert_json['rule']['level']
+      description = alert_json['rule'].get('description')
+      agentname = alert_json['agent'].get('name')
+      timestamp = alert_json['timestamp']
+      command = alert_json['data'].get('command')
+      user = alert_json['data'].get('srcuser')
+      srcip = alert_json['data'].get('srcip')
+
+      ntfy_level = 1
+      
+      # Set priority level
+      # more info here https://docs.ntfy.sh/publish/#message-priority
+      if 2 <= alert_level <= 7:
+        ntfy_level = 1
+      elif 8 <= alert_level <= 9:
+        ntfy_level = 2
+      elif 10 <= alert_level <= 11:
+        ntfy_level = 3
+      elif 12 <= alert_level <= 13:
+        ntfy_level = 4
+      elif 14 <= alert_level <= 15:
+        ntfy_level = 5
+
+      headers = {
+        'X-Title': f'{agentname}: {description}',
+        'X-Priority': str(ntfy_level),
+      }
+      
+      # Convert the date to a more readable format: 2024-03-27T15:45:27.388+0000
+      timestamp = timestamp.replace('T', ' ').replace('+0000', '')
+
+      # Alert format. Availalbe fields can be found in /var/logs/alerts/alerts.json.
+      # Store all fields in tuples
+      fields = [
+        ("Timestamp", timestamp),
+        ("Host", agentname),
+        ("Description", description),
+        ("Level", alert_level),
+        ("User", user),
+        ("Source IP", srcip),
+        ("Command", command)
+      ]
+
+      # Check to see if field has value, if not don't include in the alert
+      data = "\n".join(f"{label}: {value}" for label, value in fields if value)
+
+      response = requests.post(url=hook_url, headers=headers, data=data)
+      response.raise_for_status()
+
+  except FileNotFoundError:
+    print(f"ERROR: Alert file {alert_file_location} not found")
+    sys.exit(6)
+
+  except json.JSONDecodeError:
+    print(f"ERROR: Invalid JSON in {alert_file_location}")
+    sys.exit(7)
+
+  except requests.RequestException as e:
+    print(f"ERROR: Failed to send request to {hook_url}: {e}")
+    sys.exit(1)
+
+if __name__ == "__main__":
+  main(sys.argv)
