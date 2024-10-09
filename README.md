@@ -18,7 +18,7 @@ chown root:wazuh /var/ossec/integrations/custom-ntfy
   <level>10</level>
 </integration>
 ```
- - This page has all the available options: https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/integration.html \
+ - This page has all the available options: https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/integration.html  
 4. Restart wazuh manager.
 ```
 systemctl restart wazuh-manager
