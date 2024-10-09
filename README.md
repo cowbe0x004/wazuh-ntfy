@@ -35,5 +35,5 @@ systemctl restart wazuh-manager
 
 ---  
 __Credit:__ \
-https://github.com/joaopsoliveira03/wazuh-ntfy \ 
+https://github.com/joaopsoliveira03/wazuh-ntfy  
 https://wazuh.com/blog/how-to-integrate-external-software-using-integrator/
