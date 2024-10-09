@@ -24,7 +24,8 @@ def main(args):
       agentname = alert_json['agent'].get('name')
       timestamp = alert_json['timestamp']
       command = alert_json['data'].get('command')
-      user = alert_json['data'].get('srcuser')
+      srcuser = alert_json['data'].get('srcuser')
+      dstuser = alert_json['data'].get('dstuser')
       srcip = alert_json['data'].get('srcip')
 
       ntfy_level = 1
@@ -57,7 +58,8 @@ def main(args):
         ("Host", agentname),
         ("Description", description),
         ("Level", alert_level),
-        ("User", user),
+        ("Src User", srcuser),
+        ("Dst User", dstuser),
         ("Source IP", srcip),
         ("Command", command)
       ]
