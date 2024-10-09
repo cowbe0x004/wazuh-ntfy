@@ -29,7 +29,8 @@ systemctl restart wazuh-manager
     - Host
     - Description
     - Level
-    - User
+    - Source user
+    - Destination user
     - Source IP
     - Command
 * Notification looks something like this.  
