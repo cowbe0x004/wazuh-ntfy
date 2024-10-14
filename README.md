@@ -33,6 +33,12 @@ systemctl restart wazuh-manager
     - Destination user
     - Source IP
     - Command
+    - Image
+    - Image loaded
+    - Process user
+    - Source image
+    - Target file  
+
 * Notification looks something like this.  
 ![image](https://github.com/user-attachments/assets/996a3f0d-254f-4b8a-8a79-47843b960e1e)
 
