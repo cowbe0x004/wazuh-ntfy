@@ -28,6 +28,14 @@ def main(args):
       dstuser = alert_json['data'].get('dstuser')
       srcip = alert_json['data'].get('srcip')
 
+      # Sysmon even 7, 10, 11
+      image = alert_json['data']['win']['eventdata'].get('image')
+      image_loaded = alert_json['data']['win']['eventdata'].get('imageLoaded')
+      process_user = alert_json['data']['win']['eventdata'].get('user')
+      source_user = alert_json['data']['win']['eventdata'].get('sourceUser')
+      source_image = alert_json['data']['win']['eventdata'].get('sourceImage')
+      target_file = alert_json['data']['win']['eventdata'].get('targetFilename')
+
       ntfy_level = 1
       
       # Set priority level
@@ -49,7 +57,8 @@ def main(args):
       }
       
       # Convert the date to a more readable format: 2024-03-27T15:45:27.388+0000
-      timestamp = timestamp.replace('T', ' ').replace('+0000', '')
+      #timestamp = timestamp.replace('T', ' ').replace('+0000', '')
+      timestamp = timestamp.replace('T', ' ').split(".")[0]
 
       # Alert format. Availalbe fields can be found in /var/logs/alerts/alerts.json.
       # Store all fields in tuples
@@ -61,7 +70,13 @@ def main(args):
         ("Src User", srcuser),
         ("Dst User", dstuser),
         ("Source IP", srcip),
-        ("Command", command)
+        ("Command", command),
+        ("Image", image),
+        ("Image loaded", image_loaded),
+        ("Process user", process_user),
+        ("Source image", source_image),
+        ("Source user", source_user),
+        ("Target filename", target_file)
       ]
 
       # Check to see if field has value, if not don't include in the alert
